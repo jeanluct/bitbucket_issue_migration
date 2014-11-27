@@ -33,6 +33,16 @@ try:
 except ImportError:
     import simplejson as json
 
+def convert_items_to_unicode(dictionary):
+    """Recursively converts dictionary items to unicode."""
+    if not isinstance(dictionary, dict):
+        if isinstance(dictionary, str):
+            return dictionary.decode('utf-8')
+        else:
+            return dictionary
+    return dict((k, convert_items_to_unicode(v))
+        for k, v in dictionary.items())
+
 def output(string):
     sys.stdout.write(string)
     sys.stdout.flush()
@@ -236,6 +246,8 @@ def add_comments_to_issue(github_issue, bitbucket_comments):
         output(", adding comments")
 
     for i, comment in enumerate(bitbucket_comments):
+        # Make sure strings are unicode.
+        comment = convert_items_to_unicode(comment)
         body = u'_From {user} on {created_at}_\n\n{body}'.format(**comment)
         if body in existing_comments:
             logging.info('Skipping comment %d: already present', i + 1)
