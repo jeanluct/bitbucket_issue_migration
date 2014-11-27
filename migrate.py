@@ -266,10 +266,10 @@ def push_issue(gh_username, gh_repository, issue, body):
     github_issue = None
     if not options.dry_run:
         github_issue = github_repo.create_issue(issue['title'], body = body.encode('utf-8'), labels = github_labels)
-    
-    # Set the status and labels
-    if issue.get('status') == 'resolved':
-        github_issue.edit(state = 'closed')
+
+        # Set the status and labels
+        if issue.get('status') == 'resolved':
+            github_issue.edit(state = 'closed')
 
     # Milestones
 
